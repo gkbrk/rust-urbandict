@@ -9,7 +9,7 @@ use rustc_serialize::json;
 
 #[derive(RustcDecodable)]
 struct ApiDefinition {
-    definition: String,
+    definition: String
 }
 
 #[derive(RustcDecodable)]
