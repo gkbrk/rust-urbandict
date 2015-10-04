@@ -1,6 +1,10 @@
 [package]
 name = "urbandict"
 version = "0.1.0"
+description = "Urban Dictionary API client in Rust."
+license = "MIT"
+keywords = ["urban", "dictionary", "urbandictionary", "api", "define"]
+repository = "https://github.com/gkbrk/rust-urbandict"
 authors = ["Gökberk Yaltıraklı <webdosusb@gmail.com>"]
 
 [dependencies]
