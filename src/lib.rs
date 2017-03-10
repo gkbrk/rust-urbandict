@@ -1,36 +1,20 @@
-extern crate rustc_serialize;
-extern crate hyper;
+#[macro_use] extern crate serde_derive;
+extern crate reqwest;
 
-use std::io::Read;
-
-use hyper::Client;
-use hyper::header::Connection;
-use rustc_serialize::json;
-
-#[derive(RustcDecodable)]
-struct ApiDefinition {
-    definition: String
+#[derive(Deserialize, Debug)]
+pub struct Definition {
+    pub author: String,
+    pub definition: String
 }
 
-#[derive(RustcDecodable)]
+#[derive(Deserialize)]
 struct ApiWord {
-    list: Vec<ApiDefinition>
+    list: Vec<Definition>
 }
 
-pub fn get_definitions(word: String) -> Vec<String> {
-    let client = Client::new();
-    let mut res = client.get(&format!("http://api.urbandictionary.com/v0/define?term={}", word))
-        .header(Connection::close())
-        .send().unwrap();
+pub fn get_definitions(word: &str) -> Result<Vec<Definition>, reqwest::Error> {
+    let mut res = try!(reqwest::get(&format!("https://api.urbandictionary.com/v0/define?term={}", word)));
+    let decoded: ApiWord = try!(res.json());
 
-    let mut json_string = String::new();
-    res.read_to_string(&mut json_string).unwrap();
-
-    let decoded: ApiWord = json::decode(&json_string).unwrap();
-
-    let mut results = Vec::new();
-    for word in decoded.list {
-        results.push(word.definition);
-    }
-    return results;
+    Ok(decoded.list)
 }
